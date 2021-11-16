@@ -1,15 +1,33 @@
-**Припустимо**, що мається множина `whitespaces`, яка містить символи, що розпізнаються як
-розділювачі, що не розглядаються як токени.
+whitespaces = [',', '.', ';', ':', ' ', '\t', '\n']
 
-Також мається змінна `text`, що посилається
+text = "example.txt"
 
-- або на рядок,
-- або на ім'я текстового файлу.
 
-**Необхідно** написати функцію, яка перетворює текст з `text` на список рядків, такий що
+def parse_if_file(text):
+    print(text[len(text) - 4 : len(text)])
+    if text[len(text) - 4 : len(text)] == ".txt":
+        with open(text) as file:
+            content = file.read()
+        return content
+    return text
 
-1. всі символи, що не входять у `whitespaces` зустрічають у рядку, який дорівнює
-конкатенації рядків вихідного списку, у том ж порядку, що й у вхідному тексті;
-1. рядки вихідного списку не містять елементів множини `whitespaces`.
+def parse_text(text, whitespaces):
+    text = parse_if_file(text)
+    result = []
+    current_index = 0
+    seq_start_index = 0
+    seq_end_index = 0
+    for symbol in list(text):
+        if symbol in whitespaces:
+            seq_end_index = current_index
+            result.append(text[seq_start_index : seq_end_index])
+            seq_start_index = seq_end_index + 1
+        current_index += 1
+    if text[len(text) - 1] not in whitespaces:
+        result.append(text[seq_start_index:current_index])
+    for word in result:
+        if word == "":
+            result.remove(word)
+    return result
 
-При цьому має бути забезпечено нечутливість коду функції до змін множини `whitespaces`. 
+print(parse_text(text, whitespaces))
